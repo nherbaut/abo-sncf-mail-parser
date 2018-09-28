@@ -1,0 +1,13 @@
+aiosmtpd==1.2
+arrow==0.4.2
+atpublic==1.0
+beautifulsoup4==4.6.3
+bs4==0.0.1
+dateparser==0.7.0
+ics==0.4
+lxml==4.2.5
+python-dateutil==2.7.3
+pytz==2018.5
+regex==2018.8.29
+six==1.11.0
+tzlocal==1.5.1
