@@ -14,7 +14,7 @@ import dateparser
 from lxml.html.soupparser import fromstring
 import pickle
 import argparse
-
+import ssl
 
 
 class SNCFHandler(aiosmtpd.handlers.Message):
@@ -82,8 +82,14 @@ if __name__ == '__main__':
     parser.add_argument('port',metavar='SMTP_PORT');
     parser.add_argument('output_dir',metavar='DIR');
     parser.add_argument('http_port',metavar='HTTP_PORT',type=int);
+    parser.add_argument('cert_dir',metavar='CERT_DIR');
     args = parser.parse_args()
-    controller = aiosmtpd.controller.Controller(SNCFHandler(args.output_dir),  port=args.port,hostname=args.hostname)
+
+     
+    context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    context.load_cert_chain(os.path.join(args.cert_dir,'cert.pem'), os.path.join(args.cert_dir,'key.pem'))
+
+    controller = aiosmtpd.controller.Controller(SNCFHandler(args.output_dir),tls_context=context,  port=args.port,hostname=args.hostname)
     controller.start()
 
     import http.server
