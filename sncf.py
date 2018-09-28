@@ -82,14 +82,18 @@ if __name__ == '__main__':
     parser.add_argument('port',metavar='SMTP_PORT');
     parser.add_argument('output_dir',metavar='DIR');
     parser.add_argument('http_port',metavar='HTTP_PORT',type=int);
-    parser.add_argument('cert_dir',metavar='CERT_DIR');
+    parser.add_argument('cert_dir',nargs='?', metavar='CERT_DIR',default=None);
     args = parser.parse_args()
 
-     
-    context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    context.load_cert_chain(os.path.join(args.cert_dir,'cert.pem'), os.path.join(args.cert_dir,'key.pem'))
 
-    controller = aiosmtpd.controller.Controller(SNCFHandler(args.output_dir),tls_context=context,  port=args.port,hostname=args.hostname)
+
+
+    controller = aiosmtpd.controller.Controller(SNCFHandler(args.output_dir),  port=args.port,hostname=args.hostname)
+
+    if(args.cert_dir is not None):
+        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        context.load_cert_chain(os.path.join(args.cert_dir,'cert.pem'), os.path.join(args.cert_dir,'key.pem'))
+        controller.ssl_context=context
     controller.start()
 
     import http.server
